@@ -146,8 +146,24 @@
 
 /* Special vessels subtle accent */
 .bottle-slot.recipe-flask .bottle-svg,
-.bottle-slot.cauldron-flask .bottle-svg {
+.bottle-slot.cauldron-flask .bottle-svg,
+.bottle-slot.giant-vat .bottle-svg {
   filter: drop-shadow(0 10px 20px rgba(243, 198, 119, 0.18));
+}
+
+.bottle-slot.giant-vat {
+  width: calc(var(--bottle-w, 86px) * 1.48);
+  cursor: pointer;
+}
+
+.bottle-slot.giant-vat.completed {
+  cursor: default;
+}
+
+.bottle-slot.cap-6 .liquid-symbol,
+.bottle-slot.cap-6 .mystery-q,
+.bottle-slot.cap-6 .starlight-glyph {
+  font-size: 11px;
 }
 
 /* Ribboned / Sealed twist badge */

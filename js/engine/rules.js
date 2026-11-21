@@ -6,9 +6,10 @@
  *  - Color-Keyed Seals (lockedByColor)
  *  - Melting Frost Runes (frostMoves)
  *  - Gemstone Crest (targetColor)
- *  - Variable flask capacities (3, 4, or 5 units) & Tasting Thimbles (2-unit stagingOnly cups)
+ *  - Variable flask capacities (3, 4, 5, or 6 units) & Tasting Thimbles (2-unit stagingOnly cups)
  *  - Starlight Wildcard ('starlight' color)
  *  - Elixir Blending Cauldron (blend) & Layered Recipe Flask (recipe)
+ *  - Grand Elixir Vat (pourOnly stationary vessel)
  */
 
 export const MAX_EXTRA_BOTTLES = 2;
@@ -25,6 +26,7 @@ export function cloneBottle(b) {
     frostMoves: b.frostMoves || 0,
     targetColor: b.targetColor || null,
     stagingOnly: Boolean(b.stagingOnly),
+    pourOnly: Boolean(b.pourOnly),
     recipe: Array.isArray(b.recipe) ? b.recipe.slice() : null,
     blend: b.blend
       ? {
@@ -63,6 +65,29 @@ export function hasHiddenLayers(b) {
   return (b.hiddenCount || 0) > 0 || (Array.isArray(b.hiddenIndices) && b.hiddenIndices.length > 0);
 }
 
+function getStandardBottleCapacities(bottles) {
+  const caps = new Set();
+  for (const b of bottles) {
+    if (!b.stagingOnly && !b.pourOnly && !b.recipe && !b.blend && !b.isExtra) {
+      caps.add(b.capacity);
+    }
+  }
+  return caps;
+}
+
+export function hasMixedBottleCapacities(bottles) {
+  return getStandardBottleCapacities(bottles).size > 1;
+}
+
+export function getUniformBaseCapacity(bottles) {
+  const caps = getStandardBottleCapacities(bottles);
+  if (caps.size === 1) {
+    const [cap] = caps;
+    if (cap > 4) return cap;
+  }
+  return null;
+}
+
 /**
  * Inspects a board state and returns an ordered list of active twist IDs matching TWIST_CATALOG.
  */
@@ -79,12 +104,13 @@ export function detectBoardTwists(state) {
   if (bottles.some((b) => b.locked && b.layers.length === 0)) found.push('corked-empty');
   if (bottles.some((b) => Boolean(b.lockedByColor))) found.push('color-seal');
   if (bottles.some((b) => (b.frostMoves || 0) > 0)) found.push('frost-runes');
-  if (bottles.some((b) => Boolean(b.targetColor))) found.push('gemstone-crest');
-  if (bottles.some((b) => b.capacity === 3 || b.capacity === 5)) found.push('apothecary-sizes');
+  if (bottles.some((b) => Boolean(b.targetColor) && !b.pourOnly)) found.push('gemstone-crest');
+  if (hasMixedBottleCapacities(bottles)) found.push('apothecary-sizes');
   if (bottles.some((b) => Boolean(b.stagingOnly))) found.push('tasting-thimbles');
   if (bottles.some((b) => b.layers.includes('starlight'))) found.push('starlight');
   if (bottles.some((b) => Boolean(b.blend))) found.push('blending-cauldron');
   if (bottles.some((b) => Boolean(b.recipe))) found.push('recipe-flask');
+  if (bottles.some((b) => Boolean(b.pourOnly))) found.push('grand-vat');
 
   return found;
 }
@@ -148,6 +174,7 @@ export function canPour(state, fromIdx, toIdx) {
   const dst = state.bottles[toIdx];
   if (!src || !dst) return false;
   if (isBottleLocked(src) || isBottleLocked(dst)) return false;
+  if (src.pourOnly) return false;
   if (src.layers.length === 0) return false;
   if (isBottleComplete(src)) return false;
   if (dst.layers.length >= dst.capacity) return false;
@@ -351,7 +378,10 @@ export function hasAnyValidMove(state) {
 export function addExtraBottle(state) {
   if ((state.extraAdded || 0) >= MAX_EXTRA_BOTTLES) return null;
   const next = cloneState(state);
-  const maxCap = Math.max(4, ...next.bottles.map((b) => b.capacity));
+  const standardCaps = next.bottles
+    .filter((b) => !b.pourOnly && !b.stagingOnly)
+    .map((b) => b.capacity);
+  const maxCap = Math.max(4, ...standardCaps);
   const nextId = next.bottles.reduce((m, b) => Math.max(m, b.id), -1) + 1;
   next.bottles.push({
     id: nextId,
@@ -364,6 +394,7 @@ export function addExtraBottle(state) {
     frostMoves: 0,
     targetColor: null,
     stagingOnly: false,
+    pourOnly: false,
     recipe: null,
     blend: null,
     isExtra: true,

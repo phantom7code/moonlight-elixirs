@@ -96,9 +96,25 @@ const BOTTLE_SHAPES = {
     ribbonY: 146,
     crestY: 82,
   },
+  vat: {
+    viewBoxW: 148,
+    viewBoxH: 220,
+    bodyPath:
+      'M52 44 L96 44 L98 62 C122 74 134 102 134 138 C134 180 114 196 74 196 C34 196 14 180 14 138 C14 102 26 74 50 62 Z',
+    rimRect: { x: 40, y: 34, w: 68, h: 11, rx: 5 },
+    corkRect: { x: 52, y: 14, w: 44, h: 24, rx: 6 },
+    highlightPath: 'M30 106 C24 128 25 154 35 174',
+    highlightDot: 'M35 88 C32 92 31 96 30 99',
+    liquidTopY: 66,
+    liquidBottomY: 194,
+    ribbonY: 130,
+    crestY: 56,
+    cradle: true,
+  },
 };
 
 function getEffectiveBottleShape(bottle, styleId) {
+  if (bottle.pourOnly) return BOTTLE_SHAPES.vat;
   if (bottle.stagingOnly) return BOTTLE_SHAPES.thimble;
   if (bottle.blend) return BOTTLE_SHAPES.cauldron;
   return BOTTLE_SHAPES[styleId] || BOTTLE_SHAPES.apothecary;
@@ -115,9 +131,9 @@ function el(tag, attrs = {}) {
 /**
  * Computes balanced 1- or 2-row layout and responsive bottle dimensions for iPad & phone screens.
  */
-export function computeLayoutMetrics(bottleCount, stageWidth, stageHeight) {
+export function computeLayoutMetrics(bottleCount, stageWidth, stageHeight, hasGiantVat = false) {
   const isLandscape = stageWidth > stageHeight;
-  const maxOneRow = isLandscape ? 7 : 5;
+  const maxOneRow = isLandscape ? (hasGiantVat ? 6 : 7) : (hasGiantVat ? 4 : 5);
   const rows = bottleCount <= maxOneRow ? 1 : 2;
   const maxPerRow = rows === 1 ? bottleCount : Math.ceil(bottleCount / 2);
 
@@ -125,11 +141,12 @@ export function computeLayoutMetrics(bottleCount, stageWidth, stageHeight) {
   const availH = Math.max(240, stageHeight - (rows === 2 ? 78 : 44));
 
   const gap = Math.max(12, Math.min(34, Math.floor(availW / (maxPerRow * 4.8))));
-  const maxWByWidth = (availW - gap * (maxPerRow - 1) - 32) / maxPerRow;
+  const effectiveCols = maxPerRow + (hasGiantVat ? 0.5 : 0);
+  const maxWByWidth = (availW - gap * (maxPerRow - 1) - 32) / effectiveCols;
   const maxHByHeight = rows === 1 ? availH * 0.78 : (availH - 36) / 2;
   const maxWByHeight = maxHByHeight / 2.22;
 
-  const bottleW = Math.max(54, Math.min(118, Math.floor(Math.min(maxWByWidth, maxWByHeight))));
+  const bottleW = Math.max(50, Math.min(118, Math.floor(Math.min(maxWByWidth, maxWByHeight))));
   const bottleH = Math.floor(bottleW * 2.2);
 
   return { rows, maxPerRow, bottleW, bottleH, gap };
@@ -141,13 +158,16 @@ export function computeLayoutMetrics(bottleCount, stageWidth, stageHeight) {
 function buildBottleSvg(bottle, idPrefix, options) {
   const { styleId, showSymbols = false, forceShowCork = false } = options;
   const shape = getEffectiveBottleShape(bottle, styleId);
+  const vbW = shape.viewBoxW || 100;
+  const vbH = shape.viewBoxH || 220;
+  const cx = vbW / 2;
   const clipId = `${idPrefix}-clip`;
   const corkGradId = `${idPrefix}-cork`;
   const starGradId = `${idPrefix}-star`;
 
   const svg = el('svg', {
     class: 'bottle-svg',
-    viewBox: '0 0 100 220',
+    viewBox: `0 0 ${vbW} ${vbH}`,
     'aria-hidden': 'true',
   });
 
@@ -226,7 +246,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
       'data-layer-index': i,
       x: 4,
       y: segTop - 0.5,
-      width: 92,
+      width: vbW - 8,
       height: unitH + 1.2,
       fill: fillVal,
     });
@@ -237,7 +257,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
         el('line', {
           x1: 10,
           y1: segTop,
-          x2: 90,
+          x2: vbW - 10,
           y2: segTop,
           stroke: 'var(--mystery-stroke)',
           'stroke-width': '1.2',
@@ -248,7 +268,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
         el('line', {
           x1: 10,
           y1: segBottom,
-          x2: 90,
+          x2: vbW - 10,
           y2: segBottom,
           stroke: 'var(--mystery-stroke)',
           'stroke-width': '1.2',
@@ -257,7 +277,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
       );
       const q = el('text', {
         class: 'mystery-q',
-        x: 50,
+        x: cx,
         y: segTop + unitH / 2 + 1,
       });
       q.textContent = '?';
@@ -270,7 +290,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
           el('line', {
             x1: 10,
             y1: segBottom,
-            x2: 90,
+            x2: vbW - 10,
             y2: segBottom,
             stroke: 'rgba(0,0,0,0.14)',
             'stroke-width': '1',
@@ -282,7 +302,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
         const star = el('text', {
           class: 'starlight-glyph',
           'data-layer-index': i,
-          x: 50,
+          x: cx,
           y: segTop + unitH / 2,
         });
         star.textContent = ALCHEMY_SYMBOLS.starlight || '✧';
@@ -291,7 +311,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
         const sym = el('text', {
           class: 'liquid-symbol',
           'data-layer-index': i,
-          x: 50,
+          x: cx,
           y: segTop + unitH / 2,
         });
         sym.textContent = ALCHEMY_SYMBOLS[colorId] || '•';
@@ -310,9 +330,9 @@ function buildBottleSvg(bottle, idPrefix, options) {
     liqGroup.appendChild(
       el('ellipse', {
         class: 'liquid-meniscus',
-        cx: 50,
+        cx,
         cy: topY,
-        rx: 38,
+        rx: vbW * 0.38,
         ry: 4.5,
         fill: isTopHidden ? 'rgba(255,255,255,0.22)' : `var(--p-${topColor}-hi)`,
         opacity: '0.72',
@@ -322,7 +342,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
     if (bottle.layers.length >= 2) {
       liqGroup.appendChild(
         el('circle', {
-          cx: 36 + ((bottle.id * 7) % 10),
+          cx: cx - 14 + ((bottle.id * 7) % 10),
           cy: shape.liquidBottomY - unitH * 0.7,
           r: 2.6,
           fill: 'rgba(255,255,255,0.28)',
@@ -330,7 +350,7 @@ function buildBottleSvg(bottle, idPrefix, options) {
       );
       liqGroup.appendChild(
         el('circle', {
-          cx: 60 - ((bottle.id * 5) % 8),
+          cx: cx + 10 - ((bottle.id * 5) % 8),
           cy: shape.liquidBottomY - unitH * 1.45,
           r: 1.9,
           fill: 'rgba(255,255,255,0.24)',
@@ -339,6 +359,64 @@ function buildBottleSvg(bottle, idPrefix, options) {
     }
   }
   svg.appendChild(liqGroup);
+
+  // 2b. Heavy Brass & Timber Cradle + Graduation Ticks for Grand Elixir Vat
+  if (shape.cradle) {
+    const cradleGroup = el('g', { class: 'vat-cradle', style: 'pointer-events:none;' });
+    cradleGroup.appendChild(
+      el('path', {
+        d: 'M24 180 L18 206 L36 206 L44 190 Z',
+        fill: '#8b5e34',
+        stroke: '#f3c677',
+        'stroke-width': '1.6',
+        'stroke-linejoin': 'round',
+      })
+    );
+    cradleGroup.appendChild(
+      el('path', {
+        d: 'M124 180 L130 206 L112 206 L104 190 Z',
+        fill: '#8b5e34',
+        stroke: '#f3c677',
+        'stroke-width': '1.6',
+        'stroke-linejoin': 'round',
+      })
+    );
+    cradleGroup.appendChild(
+      el('path', {
+        d: 'M20 176 Q74 202 128 176',
+        fill: 'none',
+        stroke: '#f3c677',
+        'stroke-width': '3.5',
+        'stroke-linecap': 'round',
+      })
+    );
+    cradleGroup.appendChild(
+      el('path', {
+        d: 'M18 140 Q74 152 130 140',
+        fill: 'none',
+        stroke: 'rgba(243, 198, 119, 0.45)',
+        'stroke-width': '2',
+        'stroke-linecap': 'round',
+      })
+    );
+    for (let t = 1; t < bottle.capacity; t++) {
+      const ty = shape.liquidBottomY - t * unitH;
+      const isMajor = t % (bottle.capacity / 2) === 0;
+      cradleGroup.appendChild(
+        el('line', {
+          x1: 21,
+          y1: ty,
+          x2: isMajor ? 31 : 27,
+          y2: ty,
+          stroke: 'var(--glass-highlight)',
+          'stroke-width': isMajor ? '1.6' : '1.1',
+          opacity: isMajor ? '0.68' : '0.42',
+          'stroke-linecap': 'round',
+        })
+      );
+    }
+    svg.appendChild(cradleGroup);
+  }
 
   // 3. Glass Body Outline, Rim & Specular Reflections
   svg.appendChild(
@@ -481,11 +559,13 @@ function buildBottleSvg(bottle, idPrefix, options) {
   if (bottle.targetColor) {
     const crest = el('g', { class: 'crest-badge' });
     const cy = shape.crestY;
+    const crestR = bottle.pourOnly ? 13 : 11;
+    const gemR = bottle.pourOnly ? 8 : 6.5;
     crest.appendChild(
       el('circle', {
-        cx: 50,
+        cx,
         cy,
-        r: 11,
+        r: crestR,
         fill: 'var(--surface-strong)',
         stroke: 'var(--accent)',
         'stroke-width': '2',
@@ -493,18 +573,18 @@ function buildBottleSvg(bottle, idPrefix, options) {
     );
     crest.appendChild(
       el('circle', {
-        cx: 50,
+        cx,
         cy,
-        r: 6.5,
+        r: gemR,
         fill: `var(--p-${bottle.targetColor})`,
       })
     );
     if (showSymbols) {
       const sym = el('text', {
-        x: 50,
+        x: cx,
         y: cy + 0.5,
         fill: '#fff',
-        'font-size': '8.5',
+        'font-size': bottle.pourOnly ? '9.5' : '8.5',
         'font-weight': '700',
         'text-anchor': 'middle',
         'dominant-baseline': 'central',
@@ -513,6 +593,23 @@ function buildBottleSvg(bottle, idPrefix, options) {
       crest.appendChild(sym);
     }
     svg.appendChild(crest);
+  }
+
+  // Subtle downward pour-in cue on an empty Grand Vat
+  if (bottle.pourOnly && bottle.layers.length === 0) {
+    const cue = el('text', {
+      x: cx,
+      y: 126,
+      fill: 'var(--accent)',
+      'font-size': '18',
+      'font-weight': '700',
+      'text-anchor': 'middle',
+      'dominant-baseline': 'central',
+      opacity: '0.68',
+      style: 'pointer-events:none;',
+    });
+    cue.textContent = '▾';
+    svg.appendChild(cue);
   }
 
   // 7. Locks & Seals (Ribboned/Corked, Color-Keyed Seal, or Melting Frost Runes)
@@ -662,10 +759,12 @@ export function createBottleElement(bottle, idx, options) {
   if (locked) slot.classList.add('locked');
   if (bottle.locked && bottle.layers.length === 0) slot.classList.add('locked-empty');
   if (bottle.stagingOnly) slot.classList.add('staging-cup');
+  if (bottle.pourOnly) slot.classList.add('giant-vat');
   if (bottle.recipe) slot.classList.add('recipe-flask');
   if (bottle.blend) slot.classList.add('cauldron-flask');
   if (bottle.capacity === 3) slot.classList.add('cap-3');
   if (bottle.capacity === 5) slot.classList.add('cap-5');
+  if (bottle.capacity === 6) slot.classList.add('cap-6');
   if (hintRole === 'source') slot.classList.add('hint-source');
   if (hintRole === 'target') slot.classList.add('hint-target');
 
@@ -677,7 +776,9 @@ export function createBottleElement(bottle, idx, options) {
 
   // Subtle vessel / capacity badges
   let pillText = null;
-  if (bottle.stagingOnly) {
+  if (bottle.pourOnly) {
+    pillText = `${bottle.layers.length}/${bottle.capacity}`;
+  } else if (bottle.stagingOnly) {
     pillText = '2u Cup';
   } else if (bottle.recipe && !complete) {
     pillText = 'Recipe';
@@ -796,8 +897,12 @@ export function animatePourSequence(params) {
 
     const srcShape = getEffectiveBottleShape(srcBottle, styleId);
     const dstShape = getEffectiveBottleShape(dstBottle, styleId);
-    const srcMouthNormY = (srcShape.rimRect.y + srcShape.rimRect.h * 0.5) / 220;
-    const dstMouthNormY = (dstShape.rimRect.y + dstShape.rimRect.h * 0.5) / 220;
+    const srcVbW = srcShape.viewBoxW || 100;
+    const srcVbH = srcShape.viewBoxH || 220;
+    const dstVbW = dstShape.viewBoxW || 100;
+    const dstVbH = dstShape.viewBoxH || 220;
+    const srcMouthNormY = (srcShape.rimRect.y + srcShape.rimRect.h * 0.5) / srcVbH;
+    const dstMouthNormY = (dstShape.rimRect.y + dstShape.rimRect.h * 0.5) / dstVbH;
 
     // 1. Measure exact untransformed resting rect of srcSlot without visual jump
     const wasSelected = srcSlot.classList.contains('selected');
@@ -906,7 +1011,7 @@ export function animatePourSequence(params) {
 
         const neckW = Math.max(12, srcShape.rimRect.w * 0.42);
         srcNeckFlow = el('rect', {
-          x: 50 - neckW / 2,
+          x: srcVbW / 2 - neckW / 2,
           y: srcShape.rimRect.y,
           width: neckW,
           height: Math.max(4, srcStartTopY - srcShape.rimRect.y + 6),
@@ -916,14 +1021,14 @@ export function animatePourSequence(params) {
         srcDrainRect = el('rect', {
           x: 4,
           y: srcStartTopY - 0.5,
-          width: 92,
+          width: srcVbW - 8,
           height: Math.max(0, srcEndTopY - srcStartTopY + 1.4),
           fill: `var(--p-${colorId})`,
         });
         srcLiveMeniscus = el('ellipse', {
-          cx: 50,
+          cx: srcVbW / 2,
           cy: srcStartTopY,
-          rx: 38,
+          rx: srcVbW * 0.38,
           ry: 4.5,
           fill: `var(--p-${colorId}-hi)`,
           opacity: '0.75',
@@ -946,20 +1051,20 @@ export function animatePourSequence(params) {
         dstRiseRect = el('rect', {
           x: 4,
           y: dstStartTopY,
-          width: 92,
+          width: dstVbW - 8,
           height: 0,
           fill: `var(--p-${colorId})`,
         });
         dstLiveMeniscus = el('ellipse', {
-          cx: 50,
+          cx: dstVbW / 2,
           cy: dstStartTopY,
-          rx: 38,
+          rx: dstVbW * 0.38,
           ry: 4.5,
           fill: `var(--p-${colorId}-hi)`,
           opacity: '0.82',
         });
         dstRippleRing = el('ellipse', {
-          cx: 50,
+          cx: dstVbW / 2,
           cy: dstStartTopY,
           rx: 12,
           ry: 3,
@@ -974,8 +1079,8 @@ export function animatePourSequence(params) {
         dstLiqGroup.appendChild(dstRippleRing);
       }
 
-      const streamWidth = Math.max(5, Math.min(9.5, dstRect.width * 0.088));
-      const rimHalfPx = ((srcShape.rimRect.w * 0.36) / 100) * srcRestRect.width;
+      const streamWidth = Math.max(5, Math.min(9.5, srcRestRect.width * 0.088));
+      const rimHalfPx = ((srcShape.rimRect.w * 0.36) / srcVbW) * srcRestRect.width;
 
       if (streamPath) {
         streamPath.setAttribute('stroke', `var(--p-${colorId})`);
@@ -1047,7 +1152,7 @@ export function animatePourSequence(params) {
         const lipX = goalMouthX + localLipX * Math.cos(rad);
         const lipY = goalMouthY + localLipX * Math.sin(rad);
 
-        const surfaceY = dstRect.top + (curDstTopY / 220) * dstRect.height;
+        const surfaceY = dstRect.top + (curDstTopY / dstVbH) * dstRect.height;
 
         const headFrac = Math.min(1, rawT / 0.12);
         const tailFrac = rawT > 0.86 ? (rawT - 0.86) / 0.14 : 0;

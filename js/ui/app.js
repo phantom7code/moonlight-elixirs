@@ -28,7 +28,9 @@ import {
   cloneState,
   detectBoardTwists,
   getTopColor,
+  getUniformBaseCapacity,
   hasAnyValidMove,
+  hasMixedBottleCapacities,
   isBottleComplete,
   isBottleLocked,
   isLevelWon,
@@ -654,6 +656,14 @@ class MoonlightApp {
         ? this.session.introTwistId
         : activeTwists[0]) || null;
 
+    const uniformCap = getUniformBaseCapacity(this.session.state.bottles);
+    if (uniformCap) {
+      const capPill = document.createElement('span');
+      capPill.className = 'cap-header-pill';
+      capPill.textContent = `${uniformCap}u Flasks`;
+      sub.appendChild(capPill);
+    }
+
     if (this.session.twistBadge) {
       const pill = document.createElement('button');
       pill.type = 'button';
@@ -686,13 +696,14 @@ class MoonlightApp {
     const rect = stage.getBoundingClientRect();
     const stageW = rect.width || window.innerWidth;
     const stageH = rect.height || window.innerHeight * 0.65;
-    const metrics = computeLayoutMetrics(bottles.length, stageW, stageH);
+    const hasGiantVat = bottles.some((b) => Boolean(b.pourOnly));
+    const metrics = computeLayoutMetrics(bottles.length, stageW, stageH, hasGiantVat);
 
     stage.style.setProperty('--bottle-w', `${metrics.bottleW}px`);
     stage.style.setProperty('--bottle-h', `${metrics.bottleH}px`);
     stage.style.setProperty('--bottle-gap', `${metrics.gap}px`);
 
-    const hasVariableCap = bottles.some((b) => b.capacity !== 4);
+    const hasVariableCap = hasMixedBottleCapacities(bottles);
 
     // Split into 1 or 2 balanced rows
     const rowSplits =
@@ -776,6 +787,15 @@ class MoonlightApp {
 
     // Nothing selected yet -> try selecting this bottle
     if (this.selectedIdx === -1) {
+      if (tapped.pourOnly) {
+        if (!isBottleComplete(tapped)) {
+          const cName = COLOR_LABELS[tapped.targetColor] || tapped.targetColor || 'matching';
+          sound.playInvalid();
+          this._nudgeBottle(idx);
+          this._showToast(`Too heavy to lift — pour ${cName} elixirs into this vat`);
+        }
+        return;
+      }
       if (tapped.layers.length === 0 || isBottleComplete(tapped)) {
         return;
       }
@@ -803,7 +823,12 @@ class MoonlightApp {
 
     if (!canPour(state, fromIdx, idx)) {
       // Friendly ergonomics: if tapped bottle is a valid selectable source, switch selection cleanly
-      if (tapped.layers.length > 0 && !isBottleComplete(tapped) && !isBottleLocked(tapped)) {
+      if (
+        !tapped.pourOnly &&
+        tapped.layers.length > 0 &&
+        !isBottleComplete(tapped) &&
+        !isBottleLocked(tapped)
+      ) {
         this.selectedIdx = idx;
         sound.playSelect();
         this._syncSelectionAndHints();
@@ -868,7 +893,7 @@ class MoonlightApp {
 
     // Refresh only the affected slots in place so any other concurrent pours continue undisturbed!
     const currentState = this.session.state;
-    const hasVariableCap = currentState.bottles.some((b) => b.capacity !== 4);
+    const hasVariableCap = hasMixedBottleCapacities(currentState.bottles);
     const styleId = this.save.settings.bottleStyle;
     const showSymbols = this.save.settings.showSymbols;
 
@@ -1025,7 +1050,10 @@ class MoonlightApp {
       return `Cauldron blends 2 ${COLOR_LABELS[cA] || cA} + 2 ${COLOR_LABELS[cB] || cB}`;
     }
     if (dst.targetColor && srcColor !== dst.targetColor) {
-      return `Crested flask only accepts ${COLOR_LABELS[dst.targetColor] || dst.targetColor}`;
+      const targetName = COLOR_LABELS[dst.targetColor] || dst.targetColor;
+      return dst.pourOnly
+        ? `Grand Vat only accepts ${targetName}`
+        : `Crested flask only accepts ${targetName}`;
     }
     return null;
   }

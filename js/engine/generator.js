@@ -58,6 +58,7 @@ const DEBUT_LEVEL_SPECS = {
   181: { introTwistId: 'starlight', colorCount: 7, starlight: true },
   221: { introTwistId: 'blending-cauldron', colorCount: 7, blendingCauldron: true },
   251: { introTwistId: 'recipe-flask', colorCount: 6, recipeFlask: true },
+  301: { introTwistId: 'grand-vat', colorCount: 8, grandVat: 8 },
 };
 
 const CHAPTER_FINALE_SPECS = {
@@ -103,34 +104,44 @@ const CHAPTER_FINALE_SPECS = {
   },
   350: {
     twistBadge: 'Master Brew · 3 Twists',
-    colorCount: 7,
-    recipeFlask: true,
-    corkedEmpty: true,
+    colorCount: 9,
+    grandVat: 8,
+    frostBottles: 1,
     reverseMistBottles: 2,
   },
   500: {
     twistBadge: 'Master Brew · 3 Twists',
-    colorCount: 7,
-    recipeFlask: true,
-    starlight: true,
+    baseCap: 5,
+    colorCount: 8,
+    grandVat: 10,
     frostBottles: 1,
+    reverseMistBottles: 2,
   },
 };
 
 const ENDLESS_FINALE_CYCLE = [
   {
     twistBadge: 'Master Brew · 3 Twists',
+    baseCap: 5,
     colorCount: 8,
-    tastingThimbles: true,
-    starlight: true,
+    grandVat: 10,
+    colorLockCount: 1,
     frostBottles: 1,
   },
   {
     twistBadge: 'Master Brew · 3 Twists',
+    baseCap: 6,
     colorCount: 8,
-    blendingCauldron: true,
     colorLockCount: 1,
-    mysteryBottles: 3,
+    frostBottles: 1,
+    reverseMistBottles: 2,
+  },
+  {
+    twistBadge: 'Master Brew · 3 Twists',
+    colorCount: 10,
+    tastingThimbles: true,
+    starlight: true,
+    frostBottles: 1,
   },
   {
     twistBadge: 'Master Brew · 3 Twists',
@@ -142,9 +153,9 @@ const ENDLESS_FINALE_CYCLE = [
   {
     twistBadge: 'Master Brew · 3 Twists',
     colorCount: 9,
-    variableCap: true,
+    grandVat: 12,
     colorLockCount: 1,
-    frostBottles: 1,
+    mysteryBottles: 3,
   },
 ];
 
@@ -165,6 +176,7 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
   const isBreezy = levelNum > 10 && modWave === 1;
   const isThoughtful = levelNum > 15 && modWave === 0;
 
+  let baseCap = 4;
   let colorCount = 5;
   let emptyCount = 2;
   let mysteryBottles = 0;
@@ -179,6 +191,8 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
   let starlight = false;
   let blendingCauldron = false;
   let recipeFlask = false;
+  let grandVat = 0;
+  let subtitle = null;
   let introTwistId = null;
   let isDebut = false;
   let isFinale = false;
@@ -193,6 +207,7 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
     isFinale = Boolean(finale);
     introTwistId = debut ? debut.introTwistId : null;
     finaleBadge = finale ? finale.twistBadge : null;
+    baseCap = preset.baseCap || 4;
     colorCount = preset.colorCount;
     emptyCount = preset.emptyCount ?? 2;
     mysteryBottles = preset.mysteryBottles || 0;
@@ -207,6 +222,8 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
     starlight = Boolean(preset.starlight);
     blendingCauldron = Boolean(preset.blendingCauldron);
     recipeFlask = Boolean(preset.recipeFlask);
+    grandVat = preset.grandVat || 0;
+    subtitle = preset.subtitle || null;
   } else if (levelNum <= 15) {
     colorCount = levelNum <= 12 ? 5 : 6;
   } else if (levelNum <= 20) {
@@ -301,9 +318,9 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
 
       if (!blendingCauldron && !tastingThimbles && levelNum % 2 === 0) mysteryBottles = 2;
     }
-  } else {
-    colorCount = isBreezy ? 8 : isThoughtful ? 10 : 9;
-    emptyCount = colorCount >= 11 ? 3 : 2;
+  } else if (levelNum <= 300) {
+    baseCap = 4;
+    colorCount = isBreezy ? 8 : isThoughtful ? 11 : 10;
     if (!isBreezy) {
       const slot = levelNum % 10;
       if (slot === 0 || slot === 5) recipeFlask = true;
@@ -317,6 +334,125 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
       if (!recipeFlask && !blendingCauldron && !tastingThimbles) {
         if (levelNum % 2 === 0) mysteryBottles = 2;
         else if (levelNum % 3 === 0) reverseMistBottles = 2;
+      }
+    }
+  } else if (levelNum <= 350) {
+    baseCap = 4;
+    colorCount = isBreezy ? 8 : isThoughtful ? 11 : 10;
+    if (!isBreezy) {
+      const slot = levelNum % 10;
+      if (slot === 0 || slot === 5) recipeFlask = true;
+      else if (slot === 2 || slot === 7) {
+        grandVat = 8;
+        colorCount = Math.min(colorCount, 9);
+      } else if (slot === 3) blendingCauldron = true;
+      else if (slot === 4) tastingThimbles = true;
+      else if (slot === 6) frostBottles = 1;
+      else if (slot === 8) colorLockCount = 1;
+      else if (slot === 9) starlight = true;
+
+      if (!recipeFlask && !blendingCauldron && !tastingThimbles) {
+        if (levelNum % 2 === 0) mysteryBottles = 2;
+        else if (levelNum % 3 === 0) reverseMistBottles = 2;
+      }
+    }
+  } else if (levelNum === 351) {
+    baseCap = 5;
+    colorCount = 8;
+    emptyCount = 2;
+    subtitle = 'Deep 5-unit flasks — plan one layer deeper';
+  } else if (levelNum <= 500) {
+    if (levelNum % 2 === 1) {
+      baseCap = 5;
+      colorCount = isBreezy ? 8 : isThoughtful ? 10 : 9;
+      if (!isBreezy) {
+        const slot = ((levelNum - 1) / 2) % 7;
+        if (slot === 0 || slot === 4) {
+          grandVat = 10;
+          colorCount = Math.min(colorCount, 8);
+        } else if (slot === 1) starlight = true;
+        else if (slot === 2) frostBottles = 1;
+        else if (slot === 3) colorLockCount = 1;
+        else if (slot === 5) keyedBottles = 1;
+        else if (slot === 6) corkedEmpty = true;
+
+        if (!corkedEmpty && levelNum % 3 === 0) reverseMistBottles = 2;
+        else if (!corkedEmpty && levelNum % 4 === 1) mysteryBottles = 2;
+      }
+    } else {
+      baseCap = 4;
+      colorCount = isBreezy ? 9 : isThoughtful ? 12 : 11;
+      if (!isBreezy) {
+        const slot = (levelNum / 2) % 7;
+        if (slot === 0) {
+          grandVat = isThoughtful ? 12 : 8;
+          colorCount = Math.min(colorCount, grandVat === 12 ? 9 : 10);
+        } else if (slot === 1) recipeFlask = true;
+        else if (slot === 2) blendingCauldron = true;
+        else if (slot === 3) tastingThimbles = true;
+        else if (slot === 4) starlight = true;
+        else if (slot === 5) frostBottles = 1;
+        else if (slot === 6) colorLockCount = 1;
+
+        if (!recipeFlask && !blendingCauldron && !tastingThimbles) {
+          if (levelNum % 4 === 0) mysteryBottles = 2;
+          else if (levelNum % 3 === 0) reverseMistBottles = 2;
+        }
+      }
+    }
+  } else {
+    if (isThoughtful && levelNum % 12 === 0) {
+      baseCap = 6;
+      colorCount = 8;
+      const idx6 = Math.floor(levelNum / 12) % 4;
+      if (idx6 === 0) {
+        grandVat = 12;
+        colorCount = 7;
+      } else if (idx6 === 1) {
+        frostBottles = 1;
+        mysteryBottles = 2;
+      } else if (idx6 === 2) {
+        colorLockCount = 1;
+        reverseMistBottles = 2;
+      } else {
+        starlight = true;
+      }
+    } else if (levelNum % 2 === 1) {
+      baseCap = 5;
+      colorCount = isBreezy ? 8 : isThoughtful ? 10 : 9;
+      if (!isBreezy) {
+        const slot = ((levelNum - 1) / 2) % 7;
+        if (slot === 0 || slot === 4) {
+          grandVat = 10;
+          colorCount = Math.min(colorCount, 8);
+        } else if (slot === 1) starlight = true;
+        else if (slot === 2) frostBottles = 1;
+        else if (slot === 3) colorLockCount = 1;
+        else if (slot === 5) keyedBottles = 1;
+        else if (slot === 6) corkedEmpty = true;
+
+        if (!corkedEmpty && levelNum % 3 === 0) reverseMistBottles = 2;
+        else if (!corkedEmpty && levelNum % 4 === 1) mysteryBottles = 2;
+      }
+    } else {
+      baseCap = 4;
+      colorCount = isBreezy ? 9 : isThoughtful ? 12 : 11;
+      if (!isBreezy) {
+        const slot = (levelNum / 2) % 7;
+        if (slot === 0) {
+          grandVat = isThoughtful ? 12 : 8;
+          colorCount = Math.min(colorCount, grandVat === 12 ? 9 : 10);
+        } else if (slot === 1) recipeFlask = true;
+        else if (slot === 2) blendingCauldron = true;
+        else if (slot === 3) tastingThimbles = true;
+        else if (slot === 4) starlight = true;
+        else if (slot === 5) frostBottles = 1;
+        else if (slot === 6) colorLockCount = 1;
+
+        if (!recipeFlask && !blendingCauldron && !tastingThimbles) {
+          if (levelNum % 4 === 0) mysteryBottles = 2;
+          else if (levelNum % 3 === 0) reverseMistBottles = 2;
+        }
       }
     }
   }
@@ -334,6 +470,7 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
     starlight = false;
     blendingCauldron = false;
     recipeFlask = false;
+    grandVat = 0;
     introTwistId = null;
     isDebut = false;
     isFinale = false;
@@ -346,7 +483,8 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
   } else if (introTwistId) {
     const t = getTwistById(introTwistId);
     twistBadge = t ? t.badgeLabel : null;
-  } else if (recipeFlask) twistBadge = 'Recipe Flask';
+  } else if (grandVat > 0) twistBadge = 'Grand Vat';
+  else if (recipeFlask) twistBadge = 'Recipe Flask';
   else if (blendingCauldron) twistBadge = 'Blending Cauldron';
   else if (starlight) twistBadge = 'Starlight Wildcard';
   else if (tastingThimbles) twistBadge = 'Tasting Thimbles';
@@ -363,6 +501,7 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
   return {
     levelNum,
     chapter: getChapterForLevel(levelNum),
+    baseCap,
     colorCount,
     emptyCount,
     mysteryBottles,
@@ -377,6 +516,8 @@ export function getCampaignSpec(levelNum, pureClassic = false) {
     starlight,
     blendingCauldron,
     recipeFlask,
+    grandVat,
+    subtitle,
     introTwistId,
     isDebut,
     isFinale,
@@ -398,6 +539,7 @@ function makeEmptyBottle(id, capacity = 4, overrides = {}) {
     frostMoves: 0,
     targetColor: null,
     stagingOnly: false,
+    pourOnly: false,
     recipe: null,
     blend: null,
     isExtra: false,
@@ -410,6 +552,7 @@ function makeEmptyBottle(id, capacity = 4, overrides = {}) {
  */
 function buildBoardTemplate(spec, rng) {
   const {
+    baseCap = 4,
     colorCount,
     emptyCount,
     variableCap = false,
@@ -417,9 +560,35 @@ function buildBoardTemplate(spec, rng) {
     starlight = false,
     blendingCauldron = false,
     recipeFlask = false,
+    grandVat = 0,
   } = spec;
 
   const shuffledAll = shuffleInPlace(POTION_COLORS.slice(), rng);
+
+  if (grandVat > 0) {
+    const mult = Math.max(2, Math.min(3, Math.round(grandVat / baseCap)));
+    const vatCap = mult * baseCap;
+    const vatColor = shuffledAll[0];
+    const regularCount = Math.max(4, Math.min(colorCount - 1, shuffledAll.length - 1));
+    const regularColors = shuffledAll.slice(1, 1 + regularCount);
+
+    const unitPool = [];
+    for (const col of regularColors) {
+      for (let u = 0; u < baseCap; u++) unitPool.push(col);
+    }
+    for (let u = 0; u < vatCap; u++) {
+      unitPool.push(vatColor);
+    }
+
+    const filledCount = regularCount + mult;
+    const capacities = new Array(filledCount).fill(baseCap);
+    const emptySpecs = [
+      { capacity: baseCap },
+      { capacity: vatCap, targetColor: vatColor, pourOnly: true },
+    ];
+
+    return { unitPool, capacities, regularColors, emptySpecs };
+  }
 
   if (blendingCauldron) {
     const chosenRecipe = BLEND_RECIPES[Math.floor(rng() * BLEND_RECIPES.length)];
@@ -489,14 +658,14 @@ function buildBoardTemplate(spec, rng) {
     palette[palette.length - 1] = 'starlight';
   }
 
-  const capacities = new Array(colorCount).fill(4);
-  if (variableCap && colorCount >= 5) {
+  const capacities = new Array(colorCount).fill(baseCap);
+  if (variableCap && baseCap === 4 && colorCount >= 5) {
     // Keep non-starlight colors on 3u / 5u pair
     capacities[0] = 3;
     capacities[1] = 5;
   }
 
-  const maxCap = Math.max(4, ...capacities);
+  const maxCap = Math.max(baseCap, ...capacities);
   const unitPool = [];
   for (let c = 0; c < colorCount; c++) {
     for (let u = 0; u < capacities[c]; u++) {
@@ -504,11 +673,11 @@ function buildBoardTemplate(spec, rng) {
     }
   }
 
-  const regularColors = palette.filter((c, i) => c !== 'starlight' && capacities[i] === 4);
+  const regularColors = palette.filter((c, i) => c !== 'starlight' && capacities[i] === baseCap);
 
   const emptySpecs = [];
   if (tastingThimbles) {
-    const normalEmpties = colorCount >= 10 ? 2 : 1;
+    const normalEmpties = 1;
     for (let e = 0; e < normalEmpties; e++) {
       emptySpecs.push({ capacity: maxCap });
     }
@@ -516,7 +685,7 @@ function buildBoardTemplate(spec, rng) {
     emptySpecs.push({ capacity: 2, stagingOnly: true });
   } else {
     for (let e = 0; e < emptyCount; e++) {
-      emptySpecs.push({ capacity: e === 0 && variableCap ? maxCap : 4 });
+      emptySpecs.push({ capacity: e === 0 && variableCap ? maxCap : baseCap });
     }
   }
 
@@ -529,6 +698,8 @@ function buildBoardTemplate(spec, rng) {
 function generateVerifiedBoard(spec, seed) {
   const rng = createRng(seed);
   const {
+    baseCap = 4,
+    colorCount = 5,
     mysteryBottles = 0,
     reverseMistBottles = 0,
     lockedBottles = 0,
@@ -536,14 +707,16 @@ function generateVerifiedBoard(spec, seed) {
     colorLockCount = 0,
     frostBottles = 0,
     keyedBottles = 0,
+    grandVat = 0,
     isDebut = false,
     isFinale = false,
   } = spec;
 
   const { unitPool, capacities, regularColors, emptySpecs } = buildBoardTemplate(spec, rng);
   const filledCount = capacities.length;
-  const maxAttempts = isDebut || isFinale ? 110 : 50;
-  const maxNodes = isDebut || isFinale ? 6500 : 4000;
+  const isComplexBoard = colorCount >= 11 || baseCap >= 5 || grandVat > 0;
+  const maxAttempts = isDebut || isFinale ? 120 : isComplexBoard ? 75 : 50;
+  const maxNodes = isDebut || isFinale ? 10000 : isComplexBoard ? 7500 : 4000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const pool = shuffleInPlace(unitPool.slice(), rng);
@@ -569,7 +742,14 @@ function generateVerifiedBoard(spec, seed) {
     let reservedCrestColor = null;
     if (keyedBottles > 0 && regularColors.length > 0) {
       const plainEmpty = bottles.find(
-        (b) => b.layers.length === 0 && b.capacity === 4 && !b.stagingOnly && !b.recipe && !b.blend && !b.locked
+        (b) =>
+          b.layers.length === 0 &&
+          b.capacity === baseCap &&
+          !b.stagingOnly &&
+          !b.pourOnly &&
+          !b.recipe &&
+          !b.blend &&
+          !b.locked
       );
       if (plainEmpty) {
         reservedCrestColor = regularColors[Math.floor(rng() * regularColors.length)];
@@ -580,7 +760,14 @@ function generateVerifiedBoard(spec, seed) {
     // 2. Apply Corked Empty Reserve OR Ribboned Filled Flask
     if (corkedEmpty) {
       const plainEmpties = bottles.filter(
-        (b) => b.layers.length === 0 && !b.stagingOnly && !b.recipe && !b.blend && !b.targetColor && !b.locked
+        (b) =>
+          b.layers.length === 0 &&
+          !b.stagingOnly &&
+          !b.pourOnly &&
+          !b.recipe &&
+          !b.blend &&
+          !b.targetColor &&
+          !b.locked
       );
       if (plainEmpties.length >= 2) {
         plainEmpties[plainEmpties.length - 1].locked = true;
@@ -626,7 +813,7 @@ function generateVerifiedBoard(spec, seed) {
       }
     }
 
-    // 5. Apply Glass-Bottom Peek (middle 2 layers hidden) to unlocked 4+ capacity filled bottles
+    // 5. Apply Glass-Bottom Peek (middle layers hidden) to unlocked 4+ capacity filled bottles
     if (reverseMistBottles > 0) {
       const eligible = bottles
         .slice(0, filledCount)
@@ -634,7 +821,10 @@ function generateVerifiedBoard(spec, seed) {
       shuffleInPlace(eligible, rng);
       const count = Math.min(reverseMistBottles, eligible.length);
       for (let m = 0; m < count; m++) {
-        eligible[m].hiddenIndices = [1, 2];
+        const len = eligible[m].layers.length;
+        const midIndices = [];
+        for (let idx = 1; idx < len - 1; idx++) midIndices.push(idx);
+        eligible[m].hiddenIndices = midIndices;
       }
     }
 
@@ -647,8 +837,9 @@ function generateVerifiedBoard(spec, seed) {
         );
       shuffleInPlace(eligible, rng);
       const count = Math.min(mysteryBottles, eligible.length);
+      const maxHide = baseCap >= 5 ? 3 : 2;
       for (let m = 0; m < count; m++) {
-        eligible[m].hiddenCount = Math.min(eligible[m].layers.length - 1, 2);
+        eligible[m].hiddenCount = Math.min(eligible[m].layers.length - 1, maxHide);
       }
     }
 
@@ -680,7 +871,7 @@ function generateVerifiedBoard(spec, seed) {
       bottles.push(makeEmptyBottle(filledCount + e, emptySpecs[e].capacity, emptySpecs[e]));
     }
     const fallbackState = { bottles, extraAdded: 0, movesCount: 0 };
-    if (solveState(fallbackState, { maxNodes: 6000, weight: 2.6 }).solved) {
+    if (solveState(fallbackState, { maxNodes: Math.max(6000, maxNodes), weight: 2.6 }).solved) {
       return fallbackState;
     }
   }
@@ -733,7 +924,7 @@ export function generateCampaignLevel(levelNum, options = {}) {
     levelNum,
     title: `Level ${levelNum}`,
     chapter: spec.chapter,
-    subtitle: null,
+    subtitle: spec.subtitle || null,
     twistBadge: spec.twistBadge,
     introTwistId: spec.introTwistId || null,
     isFinale: Boolean(spec.isFinale),
@@ -772,24 +963,40 @@ export function generateZenLevel(difficulty, sessionSeed = Date.now(), pureClass
       starlight: !pureClassic && roll >= 0.7,
     };
   } else {
+    const useDeepFlasks = rng() < 0.35;
     const roll = rng();
-    spec = {
-      label: 'Master Alchemy',
-      colorCount: 9,
-      emptyCount: 2,
-      tastingThimbles: !pureClassic && roll < 0.28,
-      blendingCauldron: !pureClassic && roll >= 0.28 && roll < 0.56,
-      recipeFlask: !pureClassic && roll >= 0.56 && roll < 0.84,
-      colorLockCount: !pureClassic && roll >= 0.84 ? 1 : 0,
-      mysteryBottles: pureClassic || roll >= 0.28 ? 0 : 2,
-    };
+    if (useDeepFlasks) {
+      spec = {
+        label: 'Master Alchemy',
+        baseCap: 5,
+        colorCount: !pureClassic && roll < 0.45 ? 8 : 9,
+        emptyCount: 2,
+        grandVat: !pureClassic && roll < 0.45 ? 10 : 0,
+        frostBottles: !pureClassic && roll >= 0.45 && roll < 0.75 ? 1 : 0,
+        colorLockCount: !pureClassic && roll >= 0.75 ? 1 : 0,
+      };
+    } else {
+      spec = {
+        label: 'Master Alchemy',
+        baseCap: 4,
+        colorCount: !pureClassic && roll >= 0.65 && roll < 0.85 ? 9 : rng() < 0.5 ? 10 : 11,
+        emptyCount: 2,
+        grandVat: !pureClassic && roll < 0.25 ? 8 : 0,
+        tastingThimbles: !pureClassic && roll >= 0.25 && roll < 0.45,
+        blendingCauldron: !pureClassic && roll >= 0.45 && roll < 0.65,
+        recipeFlask: !pureClassic && roll >= 0.65 && roll < 0.85,
+        colorLockCount: !pureClassic && roll >= 0.85 ? 1 : 0,
+        mysteryBottles: !pureClassic && roll >= 0.85 ? 2 : 0,
+      };
+    }
   }
 
   const state = generateVerifiedBoard(spec, seed ^ 0x517cc1b7);
 
   let twistBadge = null;
   if (!pureClassic) {
-    if (spec.recipeFlask) twistBadge = 'Recipe Flask';
+    if (spec.grandVat) twistBadge = 'Grand Vat';
+    else if (spec.recipeFlask) twistBadge = 'Recipe Flask';
     else if (spec.blendingCauldron) twistBadge = 'Blending Cauldron';
     else if (spec.tastingThimbles) twistBadge = 'Tasting Thimbles';
     else if (spec.starlight) twistBadge = 'Starlight Wildcard';
@@ -896,7 +1103,7 @@ export function safeShuffleState(state) {
   const pool = [];
   for (let i = 0; i < state.bottles.length; i++) {
     const b = state.bottles[i];
-    if (isBottleLocked(b) || isBottleEmpty(b) || isBottleComplete(b) || b.recipe || b.blend) {
+    if (isBottleLocked(b) || isBottleEmpty(b) || isBottleComplete(b) || b.pourOnly || b.recipe || b.blend) {
       continue;
     }
     eligibleIndices.push(i);
@@ -925,7 +1132,7 @@ export function safeShuffleState(state) {
       }
     }
 
-    const res = solveState(candidate, { maxNodes: 3800, weight: 2.6 });
+    const res = solveState(candidate, { maxNodes: 6000, weight: 2.6 });
     if (res.solved) {
       return candidate;
     }

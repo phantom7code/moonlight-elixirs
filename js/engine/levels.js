@@ -208,7 +208,7 @@ export function getNextUnlockMilestone(highestCompletedLevel) {
 }
 
 /**
- * Chronological catalog of all 12 level twists (Levels 21 -> 251+).
+ * Chronological catalog of all 13 level twists (Levels 21 -> 301+).
  */
 export const TWIST_CATALOG = [
   {
@@ -508,6 +508,32 @@ export const TWIST_CATALOG = [
       targetColor: null,
       stagingOnly: false,
       recipe: ['sapphire', 'emerald', 'ruby', 'amber'],
+      blend: null,
+    },
+  },
+  {
+    id: 'grand-vat',
+    name: 'Grand Elixir Vat',
+    introLevel: 301,
+    chapter: 'Eternal Apothecary',
+    icon: '🏺',
+    badgeLabel: 'Grand Vat',
+    description:
+      'A heavy apothecary vat holds 2–3 full flasks of its crested potion color and replaces a spare empty bottle. It is too heavy to lift—you can only pour into it.',
+    tip: 'Uncover and route matching elixirs directly into the vat early to free up shelf space.',
+    sampleBottle: {
+      id: 913,
+      capacity: 8,
+      layers: ['ruby', 'ruby', 'ruby'],
+      hiddenCount: 0,
+      hiddenIndices: [],
+      locked: false,
+      lockedByColor: null,
+      frostMoves: 0,
+      targetColor: 'ruby',
+      stagingOnly: false,
+      pourOnly: true,
+      recipe: null,
       blend: null,
     },
   },

@@ -25,6 +25,7 @@ function canonicalKey(state) {
     if (b.lockedByColor) tags.push(`K${b.lockedByColor}`);
     if (b.frostMoves) tags.push(`F${b.frostMoves}`);
     if (b.stagingOnly) tags.push('S');
+    if (b.pourOnly) tags.push('P');
     if (b.targetColor) tags.push(`T${b.targetColor}`);
     if (b.recipe) tags.push(`R${b.recipe.join('.')}`);
     if (b.blend) tags.push(`B${b.blend.brewed ? 1 : 0}:${b.blend.colors.join('.')}`);
@@ -52,7 +53,12 @@ function heuristic(state) {
     if (len === 0) continue;
 
     if (isBottleComplete(b)) {
-      score -= b.recipe || b.blend ? 8 : 6;
+      score -= b.pourOnly ? 10 : b.recipe || b.blend ? 8 : 6;
+      continue;
+    }
+
+    if (b.pourOnly) {
+      score -= len * 2.4;
       continue;
     }
 
@@ -153,7 +159,7 @@ function getCandidateMoves(state) {
 
   for (let i = 0; i < n; i++) {
     const src = bottles[i];
-    if (isBottleLocked(src) || src.layers.length === 0 || isBottleComplete(src)) continue;
+    if (src.pourOnly || isBottleLocked(src) || src.layers.length === 0 || isBottleComplete(src)) continue;
 
     const srcUniform = isBottleUniform(src);
     const srcTop = getTopColor(src);
@@ -201,7 +207,9 @@ function getCandidateMoves(state) {
       }
 
       let moveBonus = 0;
-      if (dst.recipe || dst.blend) {
+      if (dst.pourOnly) {
+        moveBonus -= dst.layers.length + count === dst.capacity ? 12 : 8;
+      } else if (dst.recipe || dst.blend) {
         moveBonus -= dst.layers.length + count === dst.capacity ? 10 : 6;
       } else if (
         !dst.stagingOnly &&
@@ -298,7 +306,7 @@ export function solveState(initialState, options = {}) {
  * Falls back to the best heuristic productive move if the board is already dead-ended.
  */
 export function findHintMove(state) {
-  const res = solveState(state, { maxNodes: 6000, weight: 2.8 });
+  const res = solveState(state, { maxNodes: 8000, weight: 2.8 });
   if (res.solved && res.moves.length > 0) {
     return { move: res.moves[0], solvable: true };
   }
