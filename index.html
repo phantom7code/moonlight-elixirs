@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="candlelit-apothecary" data-palette="apothecary-gems">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Moonlight Elixirs</title>
+  <meta name="description" content="A relaxing, ad-free, timer-free magical apothecary potion sorting puzzle." />
+
+  <!-- iPad / iOS Standalone PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Moonlight Elixirs" />
+  <meta name="theme-color" content="#191326" />
+
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/icon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="./css/tokens.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/bottles.css" />
+</head>
+<body>
+  <div class="app-backdrop" aria-hidden="true"></div>
+  <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+  <!-- Floating liquid stream overlay during pouring animations (per-pour groups spawned dynamically) -->
+  <svg id="pour-stream-overlay" class="pour-stream-overlay" aria-hidden="true"></svg>
+
+  <main class="app-root">
+    <!-- ==================== HOME SCREEN ==================== -->
+    <section id="home-screen" class="screen home-screen active" aria-label="Home">
+      <div class="home-top-bar">
+        <button id="home-mute-btn" class="icon-btn" type="button" aria-label="Toggle Sound">🔊</button>
+        <button id="home-settings-btn" class="icon-btn" type="button" aria-label="Settings">⚙</button>
+      </div>
+
+      <div class="home-center">
+        <img src="./assets/icons/icon.svg" alt="" class="home-emblem" />
+        <h1 class="home-title">Moonlight Elixirs</h1>
+        <p class="home-tagline">A quiet apothecary for unhurried sorting</p>
+        <button id="home-play-btn" class="btn-primary" type="button">Play Level 1</button>
+        <div id="home-chapter-pill" class="home-chapter-pill">Chapter · First Brews</div>
+      </div>
+
+      <div class="home-nav-row">
+        <button id="open-daily-btn" class="home-card-btn" type="button">
+          <span class="home-card-icon">☾</span>
+          <span class="home-card-label">Daily Elixir</span>
+          <span id="home-daily-sub" class="home-card-sub">Fresh Brew Ready</span>
+        </button>
+        <button id="open-zen-btn" class="home-card-btn" type="button">
+          <span class="home-card-icon">✦</span>
+          <span class="home-card-label">Zen Brewing</span>
+          <span class="home-card-sub">Free Play Anytime</span>
+        </button>
+        <button id="open-collection-btn" class="home-card-btn" type="button">
+          <span class="home-card-icon">⚗</span>
+          <span class="home-card-label">Collection</span>
+          <span id="home-collection-sub" class="home-card-sub">Themes &amp; Flasks</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== GAMEPLAY SCREEN ==================== -->
+    <section id="game-screen" class="screen game-screen" aria-label="Potion Shelf">
+      <header class="game-top-bar">
+        <div class="game-top-left">
+          <button id="game-home-btn" class="icon-btn" type="button" aria-label="Return Home">⌂</button>
+        </div>
+
+        <div class="game-title-wrap">
+          <div id="game-level-title" class="game-level-title">Level 1</div>
+          <div id="game-chapter-sub" class="game-chapter-sub">First Brews</div>
+        </div>
+
+        <div class="game-top-right">
+          <button id="game-mute-btn" class="icon-btn" type="button" aria-label="Toggle Sound">🔊</button>
+          <button id="game-collection-btn" class="icon-btn" type="button" aria-label="Themes and Flasks">⚗</button>
+          <button id="game-settings-btn" class="icon-btn" type="button" aria-label="Settings">⚙</button>
+        </div>
+      </header>
+
+      <div id="game-banner" class="game-banner hidden"></div>
+
+      <div id="board-stage" class="board-stage" aria-live="polite"></div>
+
+      <nav class="helper-dock" aria-label="Helper Tools">
+        <button id="btn-undo" class="dock-btn" type="button" aria-label="Undo last pour">
+          <span class="dock-icon">↶</span>
+          <span class="dock-label">Undo</span>
+        </button>
+        <button id="btn-restart" class="dock-btn" type="button" aria-label="Restart level">
+          <span class="dock-icon">↻</span>
+          <span class="dock-label">Restart</span>
+        </button>
+        <button id="btn-hint" class="dock-btn" type="button" aria-label="Gentle hint">
+          <span class="dock-icon">✧</span>
+          <span class="dock-label">Hint</span>
+        </button>
+        <button id="btn-shuffle" class="dock-btn" type="button" aria-label="Shuffle potions">
+          <span class="dock-icon">⇄</span>
+          <span class="dock-label">Shuffle</span>
+        </button>
+        <button id="btn-extra" class="dock-btn" type="button" aria-label="Add spare empty flask">
+          <span class="dock-icon">＋</span>
+          <span class="dock-label">Flask</span>
+          <span id="extra-badge" class="dock-badge">+2</span>
+        </button>
+      </nav>
+    </section>
+  </main>
+
+  <!-- ==================== LEVEL COMPLETE OVERLAY ==================== -->
+  <div id="win-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="win-title">
+    <div class="modal-card win-card">
+      <div class="win-emblem" aria-hidden="true">✦</div>
+      <h2 id="win-title" class="win-title">Brew Perfected</h2>
+      <p id="win-sub" class="win-sub">Level 1 · First Brews</p>
+
+      <div id="win-unlock-box" class="win-unlock-box hidden">
+        <span class="win-unlock-kicker">New Apothecary Gift Unlocked</span>
+        <strong id="win-unlock-name">Bottle: Alchemy Vial</strong>
+        <button id="win-unlock-equip" class="btn-secondary" type="button" style="margin-top:6px;">Equip Now</button>
+      </div>
+
+      <div id="win-progress-note" class="win-progress-note"></div>
+
+      <div class="win-actions">
+        <button id="win-next-btn" class="btn-primary" type="button">Next Level</button>
+        <button id="win-home-btn" class="btn-secondary" type="button">Back to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FIRST-TIME TWIST DISCOVERY MODAL ==================== -->
+  <div id="twist-intro-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="twist-intro-title">
+    <div class="modal-card twist-intro-card">
+      <span id="twist-intro-kicker" class="win-unlock-kicker">New Twist Discovered</span>
+      <div id="twist-intro-tabs" class="twist-intro-tabs hidden" role="tablist" aria-label="Active twists on this shelf"></div>
+      <div id="twist-intro-preview" class="twist-preview-stage" aria-hidden="true"></div>
+      <h2 id="twist-intro-title" class="win-title">Mystery Mist</h2>
+      <p id="twist-intro-meta" class="win-sub">Introduces at Level 21 · Veiled Elixirs</p>
+      <p id="twist-intro-desc" class="twist-intro-desc"></p>
+      <div id="twist-intro-tip" class="twist-intro-tip"></div>
+      <div class="win-actions">
+        <button id="twist-intro-close" class="btn-primary" type="button">Got It — Let's Brew</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== COLLECTION DRAWER ==================== -->
+  <div id="collection-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="collection-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="collection-title" class="modal-title">Apothecary Collection</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-bar" role="tablist">
+          <button class="tab-btn active" type="button" data-tab="themes">Themes</button>
+          <button class="tab-btn" type="button" data-tab="bottles">Flasks</button>
+          <button class="tab-btn" type="button" data-tab="palettes">Palettes</button>
+        </div>
+        <div id="collection-grid" class="choice-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ZEN BREWING MODAL ==================== -->
+  <div id="zen-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="zen-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="zen-title" class="modal-title">Zen Brewing</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin:0;color:var(--text-secondary);font-size:0.92rem;">
+          Pick a pace and pour endlessly without affecting your Journey shelf.
+        </p>
+        <div class="zen-grid">
+          <button class="choice-card" type="button" data-zen="breezy">
+            <div class="choice-name"><span>Breezy Brew</span><span>☁</span></div>
+            <div class="choice-sub">5 colors · Pure, effortless calm</div>
+          </button>
+          <button class="choice-card" type="button" data-zen="relaxing">
+            <div class="choice-name"><span>Relaxing Pour</span><span>☾</span></div>
+            <div class="choice-sub">7 colors · Cozy evening rhythm</div>
+          </button>
+          <button class="choice-card" type="button" data-zen="thoughtful">
+            <div class="choice-name"><span>Thoughtful Mix</span><span>✧</span></div>
+            <div class="choice-sub">9 colors · Gentle twists &amp; depth</div>
+          </button>
+          <button class="choice-card" type="button" data-zen="tricky">
+            <div class="choice-name"><span>Master Alchemy</span><span>⚗</span></div>
+            <div class="choice-sub">10 colors · Rich apothecary challenge</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DAILY ELIXIR MODAL ==================== -->
+  <div id="daily-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="daily-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="daily-title" class="modal-title">Daily Elixir</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="daily-progress-text" style="margin:0;color:var(--text-secondary);font-size:0.9rem;"></p>
+        <div id="daily-grid" class="daily-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SETTINGS SHEET ==================== -->
+  <div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="settings-title" class="modal-title">Settings</h2>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <div class="setting-row">
+            <div class="setting-text">
+              <span class="setting-label">Sound Effects</span>
+              <span class="setting-desc">Soft water pours, glass clinks &amp; chimes</span>
+            </div>
+            <label class="switch">
+              <input id="toggle-sfx" type="checkbox" checked />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-text">
+              <span class="setting-label">Alchemy Symbols</span>
+              <span class="setting-desc">Show subtle icons on potions for easy matching</span>
+            </div>
+            <label class="switch">
+              <input id="toggle-symbols" type="checkbox" />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-text">
+              <span class="setting-label">Pure Classic Mode</span>
+              <span class="setting-desc">Pause all special twists for classic sorting</span>
+            </div>
+            <label class="switch">
+              <input id="toggle-classic" type="checkbox" />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-text">
+              <span class="setting-label">Progress Backup</span>
+              <span class="setting-desc">Copy or restore your shelf if switching iPads</span>
+            </div>
+            <div class="backup-row">
+              <button id="btn-export-save" class="btn-secondary" type="button" style="padding:8px 14px;font-size:0.82rem;">Copy</button>
+              <button id="btn-import-save" class="btn-secondary" type="button" style="padding:8px 14px;font-size:0.82rem;">Restore</button>
+            </div>
+          </div>
+        </div>
+
+        <footer class="settings-dedication">
+          <span class="settings-dedication-moon" aria-hidden="true">☾</span>
+          <span>For my wife</span>
+          <span class="settings-dedication-moon" aria-hidden="true">☽</span>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="./js/ui/app.js"></script>
+</body>
+</html>

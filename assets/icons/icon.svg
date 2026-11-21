@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="72%">
+      <stop offset="0%" stop-color="#2c2444"/>
+      <stop offset="55%" stop-color="#19142b"/>
+      <stop offset="100%" stop-color="#0f0c1b"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="54%" r="42%">
+      <stop offset="0%" stop-color="#f7c873" stop-opacity="0.34"/>
+      <stop offset="55%" stop-color="#9e76f5" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#19142b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cork" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9c6c46"/>
+      <stop offset="45%" stop-color="#c99568"/>
+      <stop offset="100%" stop-color="#7d5232"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.18"/>
+    </linearGradient>
+    <clipPath id="flaskClip">
+      <path d="M214 142 L298 142 L298 192 C350 220 382 270 382 332 C382 406 326 446 256 446 C186 446 130 406 130 332 C130 270 162 220 214 192 Z"/>
+    </clipPath>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="280" r="215" fill="url(#glow)"/>
+
+  <!-- Crescent moon behind flask neck -->
+  <path d="M352 104 A58 58 0 1 0 412 184 A46 46 0 1 1 352 104 Z" fill="#f7d68a" opacity="0.92"/>
+
+  <!-- Twinkling stars -->
+  <g fill="#fce3a4" opacity="0.88">
+    <path d="M126 134 L132 150 L148 156 L132 162 L126 178 L120 162 L104 156 L120 150 Z"/>
+    <circle cx="164" cy="108" r="5"/>
+    <circle cx="394" cy="252" r="5"/>
+    <circle cx="110" cy="242" r="4"/>
+    <circle cx="316" cy="108" r="3.5"/>
+  </g>
+
+  <!-- Cork -->
+  <rect x="220" y="76" width="72" height="58" rx="14" fill="url(#cork)"/>
+  <rect x="230" y="84" width="14" height="40" rx="7" fill="#e5ba91" opacity="0.35"/>
+
+  <!-- Potion liquid layers clipped to flask interior -->
+  <g clip-path="url(#flaskClip)">
+    <rect x="120" y="366" width="272" height="90" fill="#6d4aff"/>
+    <rect x="120" y="302" width="272" height="66" fill="#46b6c9"/>
+    <rect x="120" y="242" width="272" height="62" fill="#f0956a"/>
+    <ellipse cx="256" cy="242" rx="110" ry="11" fill="#ffd1a8" opacity="0.65"/>
+    <!-- Subtle inner bubbles -->
+    <circle cx="212" cy="342" r="9" fill="#ffffff" opacity="0.28"/>
+    <circle cx="290" cy="396" r="12" fill="#ffffff" opacity="0.22"/>
+    <circle cx="268" cy="284" r="6" fill="#ffffff" opacity="0.32"/>
+  </g>
+
+  <!-- Glass flask body -->
+  <path d="M214 142 L298 142 L298 192 C350 220 382 270 382 332 C382 406 326 446 256 446 C186 446 130 406 130 332 C130 270 162 220 214 192 Z"
+        fill="url(#glass)" stroke="#e7dcff" stroke-opacity="0.72" stroke-width="10" stroke-linejoin="round"/>
+
+  <!-- Flask rim -->
+  <rect x="196" y="126" width="120" height="22" rx="11" fill="#d8c9f5" fill-opacity="0.38" stroke="#f0e7ff" stroke-opacity="0.82" stroke-width="6"/>
+
+  <!-- Specular glass highlight -->
+  <path d="M174 268 C158 296 154 334 166 368" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="12" stroke-linecap="round"/>
+  <path d="M186 238 C182 244 179 250 177 254" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="10" stroke-linecap="round"/>
+</svg>

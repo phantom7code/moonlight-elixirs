@@ -1,0 +1,235 @@
+/* Moonlight Elixirs — Potion Flasks, Liquid Layers, Corks & Pouring Animations */
+
+.bottle-slot {
+  position: relative;
+  z-index: 2;
+  width: var(--bottle-w, 86px);
+  height: var(--bottle-h, 198px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+  transform-origin: 50% 80%;
+  transition: transform 0.28s var(--ease-spring), filter 0.25s ease;
+  will-change: transform;
+}
+
+.bottle-slot.selected {
+  transform: translateY(-24px) scale(1.04);
+  filter: drop-shadow(0 20px 26px rgba(243, 198, 119, 0.34));
+  z-index: 12;
+}
+
+.bottle-slot.pouring-source {
+  z-index: 40;
+  pointer-events: none;
+  transition: transform 0.32s var(--ease-spring);
+}
+
+.bottle-slot.completed {
+  cursor: default;
+}
+
+.bottle-slot.locked {
+  cursor: not-allowed;
+}
+
+.bottle-slot.invalid-shake {
+  animation: gentleNudge 0.32s ease;
+}
+
+@keyframes gentleNudge {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.bottle-slot.hint-source {
+  animation: hintPulse 1.2s ease-in-out infinite;
+}
+
+.bottle-slot.hint-target {
+  animation: hintTargetPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% {
+    transform: translateY(0);
+    filter: drop-shadow(0 0 10px rgba(243, 198, 119, 0.45));
+  }
+  50% {
+    transform: translateY(-14px);
+    filter: drop-shadow(0 0 22px rgba(243, 198, 119, 0.92));
+  }
+}
+
+@keyframes hintTargetPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(145, 228, 224, 0.38));
+  }
+  50% {
+    filter: drop-shadow(0 0 22px rgba(145, 228, 224, 0.92));
+  }
+}
+
+.bottle-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(var(--shadow-bottle));
+}
+
+/* Liquid layers smooth height/position transition */
+.liquid-segment {
+  transition: y 0.34s var(--ease-spring), height 0.34s var(--ease-spring), opacity 0.25s ease;
+}
+
+.liquid-meniscus {
+  transition: cy 0.34s var(--ease-spring), opacity 0.25s ease;
+}
+
+.liquid-symbol {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  fill: rgba(255, 255, 255, 0.9);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+}
+
+.mystery-q {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  fill: var(--accent-strong);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+/* Cork drop-in animation when bottle completes */
+.bottle-cork {
+  opacity: 0;
+  transform: translateY(-22px);
+  transition: opacity 0.24s ease, transform 0.42s var(--ease-bounce);
+}
+
+.bottle-slot.completed .bottle-cork,
+.bottle-slot.locked-empty .bottle-cork {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Completed gentle aura */
+.bottle-slot.completed .bottle-svg {
+  filter: drop-shadow(0 10px 22px rgba(243, 198, 119, 0.26));
+}
+
+/* Starlight wildcard glyph */
+.starlight-glyph {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 13px;
+  fill: #4b3975;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+/* Frost seal runes */
+.frost-group {
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s var(--ease-spring);
+}
+
+/* Special vessels subtle accent */
+.bottle-slot.recipe-flask .bottle-svg,
+.bottle-slot.cauldron-flask .bottle-svg {
+  filter: drop-shadow(0 10px 20px rgba(243, 198, 119, 0.18));
+}
+
+/* Ribboned / Sealed twist badge */
+.ribbon-group {
+  transition: opacity 0.38s ease, transform 0.38s var(--ease-spring);
+  transform-origin: center;
+}
+
+.bottle-slot.unlocking .ribbon-group {
+  opacity: 0;
+  transform: scale(1.22);
+}
+
+/* Color-keyed gemstone badge */
+.crest-badge {
+  pointer-events: none;
+}
+
+/* Pouring liquid stream overlay SVG */
+.pour-stream-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 35;
+}
+
+.pour-stream-path {
+  fill: none;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.pour-stream-path.active {
+  opacity: 0.96;
+}
+
+.pour-stream-shine {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.pour-stream-shine.active {
+  opacity: 0.85;
+}
+
+.pour-splash-dot {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.pour-splash-dot.active {
+  opacity: 0.78;
+}
+
+/* Short (3-unit) and Tall (5-unit) flask subtle proportions */
+.bottle-slot.cap-3 {
+  transform-origin: 50% 100%;
+}
+
+.bottle-slot.cap-5 .bottle-svg {
+  transform: scaleY(1.06);
+  transform-origin: 50% 100%;
+}
+
+/* Small capacity indicator pill on variable-capacity levels */
+.cap-pill {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  padding: 1px 6px;
+  border-radius: 999px;
+  pointer-events: none;
+}

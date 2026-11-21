@@ -1,0 +1,223 @@
+/* Moonlight Elixirs — Design Tokens, 5 Cozy Themes & 4 Potion Palettes */
+
+:root {
+  --font-display: 'New York', 'Iowan Old Style', 'Palatino Linotype', 'Georgia', serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Segoe UI', system-ui, sans-serif;
+
+  /* Safe area insets for iPad / iPhone standalone PWA */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Radii & transitions */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-pill: 999px;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Default theme: Candlelit Apothecary */
+  --bg-top: #1d1527;
+  --bg-mid: #281d34;
+  --bg-bot: #16101f;
+  --bg-glow-1: rgba(244, 193, 108, 0.20);
+  --bg-glow-2: rgba(154, 114, 214, 0.16);
+  --surface: rgba(38, 28, 52, 0.72);
+  --surface-strong: rgba(31, 22, 43, 0.92);
+  --surface-hover: rgba(56, 42, 74, 0.85);
+  --border: rgba(244, 214, 159, 0.22);
+  --border-subtle: rgba(244, 214, 159, 0.12);
+  --text-primary: #fbf4e6;
+  --text-secondary: #d4c6b5;
+  --text-muted: #9e8fa3;
+  --accent: #f3c677;
+  --accent-strong: #f8d896;
+  --accent-text: #22160c;
+  --shelf-top: #4b3428;
+  --shelf-front: #35231a;
+  --shelf-edge: rgba(243, 198, 119, 0.25);
+  --glass-stroke: rgba(245, 236, 255, 0.68);
+  --glass-fill: rgba(255, 250, 244, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.42);
+  --mystery-bg: #3b3052;
+  --mystery-stroke: rgba(243, 198, 119, 0.45);
+  --shadow-soft: 0 12px 32px rgba(7, 4, 14, 0.45);
+  --shadow-bottle: 0 12px 22px rgba(8, 5, 16, 0.45);
+}
+
+/* Theme 2: Moonlit Greenhouse (Botanical Dark Sanctuary) */
+[data-theme="moonlit-greenhouse"] {
+  --bg-top: #0d1d1c;
+  --bg-mid: #152b29;
+  --bg-bot: #091414;
+  --bg-glow-1: rgba(145, 220, 179, 0.18);
+  --bg-glow-2: rgba(102, 184, 196, 0.14);
+  --surface: rgba(20, 42, 39, 0.74);
+  --surface-strong: rgba(15, 34, 32, 0.93);
+  --surface-hover: rgba(31, 61, 56, 0.86);
+  --border: rgba(169, 224, 194, 0.22);
+  --border-subtle: rgba(169, 224, 194, 0.11);
+  --text-primary: #eef7f2;
+  --text-secondary: #b9d4c7;
+  --text-muted: #7f9f92;
+  --accent: #9ed9b8;
+  --accent-strong: #bce9cf;
+  --accent-text: #0c2118;
+  --shelf-top: #26423b;
+  --shelf-front: #192d28;
+  --shelf-edge: rgba(158, 217, 184, 0.22);
+  --glass-stroke: rgba(226, 250, 240, 0.65);
+  --mystery-bg: #223f3c;
+  --mystery-stroke: rgba(158, 217, 184, 0.45);
+}
+
+/* Theme 3: Starlight Observatory (Midnight Night Mode) */
+[data-theme="starlight-observatory"] {
+  --bg-top: #090d1e;
+  --bg-mid: #111834;
+  --bg-bot: #060914;
+  --bg-glow-1: rgba(245, 214, 134, 0.15);
+  --bg-glow-2: rgba(114, 146, 232, 0.16);
+  --surface: rgba(18, 25, 52, 0.76);
+  --surface-strong: rgba(13, 18, 39, 0.94);
+  --surface-hover: rgba(30, 40, 78, 0.88);
+  --border: rgba(242, 215, 148, 0.20);
+  --border-subtle: rgba(242, 215, 148, 0.10);
+  --text-primary: #f4f3fa;
+  --text-secondary: #c0c6df;
+  --text-muted: #7e88ad;
+  --accent: #f2d488;
+  --accent-strong: #fae3a8;
+  --accent-text: #16120a;
+  --shelf-top: #1d274b;
+  --shelf-front: #121833;
+  --shelf-edge: rgba(242, 212, 136, 0.24);
+  --glass-stroke: rgba(225, 235, 255, 0.62);
+  --mystery-bg: #1e2850;
+  --mystery-stroke: rgba(242, 212, 136, 0.42);
+}
+
+/* Theme 4: Sunlit Tea Parlor (Warm Daytime Light Theme) */
+[data-theme="sunlit-tea-parlor"] {
+  --bg-top: #f7f1e7;
+  --bg-mid: #efe4d3;
+  --bg-bot: #e5d5bf;
+  --bg-glow-1: rgba(255, 236, 198, 0.65);
+  --bg-glow-2: rgba(223, 184, 146, 0.28);
+  --surface: rgba(255, 250, 242, 0.82);
+  --surface-strong: rgba(252, 246, 237, 0.96);
+  --surface-hover: rgba(245, 234, 219, 0.95);
+  --border: rgba(145, 108, 76, 0.24);
+  --border-subtle: rgba(145, 108, 76, 0.12);
+  --text-primary: #3b2a20;
+  --text-secondary: #6b5344;
+  --text-muted: #987e6c;
+  --accent: #c47d51;
+  --accent-strong: #d58f63;
+  --accent-text: #fff9f2;
+  --shelf-top: #cfa987;
+  --shelf-front: #b58b67;
+  --shelf-edge: rgba(255, 249, 240, 0.55);
+  --glass-stroke: rgba(112, 85, 65, 0.50);
+  --glass-fill: rgba(255, 255, 255, 0.34);
+  --glass-highlight: rgba(255, 255, 255, 0.72);
+  --mystery-bg: #c6b2a0;
+  --mystery-stroke: rgba(112, 85, 65, 0.45);
+  --shadow-soft: 0 12px 28px rgba(95, 67, 42, 0.14);
+  --shadow-bottle: 0 10px 18px rgba(102, 74, 48, 0.18);
+}
+
+/* Theme 5: Enchanted Crystal Cave */
+[data-theme="crystal-cave"] {
+  --bg-top: #14102b;
+  --bg-mid: #231945;
+  --bg-bot: #100b21;
+  --bg-glow-1: rgba(126, 229, 229, 0.18);
+  --bg-glow-2: rgba(196, 127, 245, 0.20);
+  --surface: rgba(34, 24, 66, 0.74);
+  --surface-strong: rgba(24, 17, 49, 0.94);
+  --surface-hover: rgba(49, 36, 92, 0.88);
+  --border: rgba(142, 232, 234, 0.24);
+  --border-subtle: rgba(198, 152, 248, 0.14);
+  --text-primary: #f5f2ff;
+  --text-secondary: #cbbfe6;
+  --text-muted: #8f82b5;
+  --accent: #7fe4e6;
+  --accent-strong: #a4f0f1;
+  --accent-text: #102026;
+  --shelf-top: #372863;
+  --shelf-front: #241944;
+  --shelf-edge: rgba(127, 228, 230, 0.28);
+  --glass-stroke: rgba(226, 248, 255, 0.68);
+  --mystery-bg: #352762;
+  --mystery-stroke: rgba(127, 228, 230, 0.48);
+}
+
+/* ==================== POTION COLOR PALETTES ==================== */
+/* Palette 1: Apothecary Gems (Default) */
+:root,
+[data-palette="apothecary-gems"] {
+  --p-ruby: #e04f67;        --p-ruby-hi: #f57c90;
+  --p-sapphire: #488be6;    --p-sapphire-hi: #79b1f7;
+  --p-emerald: #3db377;     --p-emerald-hi: #6ed49f;
+  --p-amber: #f0a43a;       --p-amber-hi: #f9c46e;
+  --p-amethyst: #9b6be8;    --p-amethyst-hi: #be9bf5;
+  --p-teal: #2db4b4;        --p-teal-hi: #63d4d4;
+  --p-rose: #ec82b4;        --p-rose-hi: #f7aed1;
+  --p-coral: #ee7452;       --p-coral-hi: #f79e83;
+  --p-indigo: #5c62d6;      --p-indigo-hi: #8a90ee;
+  --p-mint: #76cc90;        --p-mint-hi: #a4e3b6;
+  --p-plum: #b54e9a;        --p-plum-hi: #d47ebd;
+  --p-gold: #e4cc4f;        --p-gold-hi: #f3e282;
+  --p-starlight: #dce8ff;   --p-starlight-hi: #ffffff;
+}
+
+/* Palette 2: Soft Pastels */
+[data-palette="soft-pastels"] {
+  --p-ruby: #ec859b;        --p-ruby-hi: #f8b0bf;
+  --p-sapphire: #7cb3f0;    --p-sapphire-hi: #a9cff8;
+  --p-emerald: #75cea0;     --p-emerald-hi: #a2e3c1;
+  --p-amber: #f5c36b;       --p-amber-hi: #fad99d;
+  --p-amethyst: #b894f0;    --p-amethyst-hi: #d4bdf7;
+  --p-teal: #6fd0d0;        --p-teal-hi: #9ee3e3;
+  --p-rose: #f2a4c8;        --p-rose-hi: #f9c7de;
+  --p-coral: #f39d82;       --p-coral-hi: #f9bfa9;
+  --p-indigo: #8a92e6;      --p-indigo-hi: #b2b8f2;
+  --p-mint: #9cdbb0;        --p-mint-hi: #c2ebd0;
+  --p-plum: #cc84ba;        --p-plum-hi: #e1aed4;
+  --p-gold: #ece07e;        --p-gold-hi: #f6eead;
+}
+
+/* Palette 3: Botanical Herbary */
+[data-palette="botanical-earth"] {
+  --p-ruby: #c95854;        --p-ruby-hi: #e0837f;
+  --p-sapphire: #4f7ca8;    --p-sapphire-hi: #7ba3ca;
+  --p-emerald: #57966d;     --p-emerald-hi: #80b893;
+  --p-amber: #dc9c45;       --p-amber-hi: #ebb973;
+  --p-amethyst: #8c6aa8;    --p-amethyst-hi: #af92c7;
+  --p-teal: #499492;        --p-teal-hi: #74b5b3;
+  --p-rose: #d48394;        --p-rose-hi: #e5a9b6;
+  --p-coral: #d4724a;       --p-coral-hi: #e69878;
+  --p-indigo: #59659e;      --p-indigo-hi: #818cc0;
+  --p-mint: #89b584;        --p-mint-hi: #aecfa9;
+  --p-plum: #9c567d;        --p-plum-hi: #bd7fa1;
+  --p-gold: #cfc056;        --p-gold-hi: #e2d785;
+}
+
+/* Palette 4: Classic Vibrant */
+[data-palette="classic-vibrant"] {
+  --p-ruby: #f23d52;        --p-ruby-hi: #ff7383;
+  --p-sapphire: #2a85eb;    --p-sapphire-hi: #64aaf8;
+  --p-emerald: #26c46c;     --p-emerald-hi: #5ce096;
+  --p-amber: #ff9f1c;       --p-amber-hi: #ffc063;
+  --p-amethyst: #8d4ef5;    --p-amethyst-hi: #b588fa;
+  --p-teal: #00c4c7;        --p-teal-hi: #4ce1e3;
+  --p-rose: #f765a3;        --p-rose-hi: #fa98c2;
+  --p-coral: #ff6b4a;       --p-coral-hi: #ff9a83;
+  --p-indigo: #4b55eb;      --p-indigo-hi: #7e86f5;
+  --p-mint: #5bd98f;        --p-mint-hi: #90e8b4;
+  --p-plum: #c43bb0;        --p-plum-hi: #dc72cd;
+  --p-gold: #f0d72b;        --p-gold-hi: #f8e76e;
+}

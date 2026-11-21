@@ -1,0 +1,15 @@
+# Optional local development tools
+tools/
+
+# Internal information
+info/
+
+# Python cache (if tools are run locally)
+__pycache__/
+*.py[cod]
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
