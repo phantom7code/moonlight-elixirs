@@ -126,28 +126,28 @@ export const PALETTES = [
     name: 'Apothecary Gems',
     subtitle: 'Rich, luminous jewel elixirs',
     unlockLevel: 1,
-    swatches: ['#e04f67', '#4a8fe7', '#3fb67a', '#f2a93b', '#9d6be8', '#33b5b5'],
+    swatches: ['#db2443', '#3892f5', '#137e4c', '#f78828', '#9d59f2', '#22d8dc'],
   },
   {
     id: 'soft-pastels',
     name: 'Soft Pastels',
     subtitle: 'Dreamy watercolor hues',
     unlockLevel: 12,
-    swatches: ['#f08ca4', '#7eb6f2', '#7fd1a8', '#f7ca74', '#be9df0', '#79d2d4'],
+    swatches: ['#dc4c69', '#6ba8f5', '#2b8c63', '#f79d52', '#a67df0', '#5cdbd6'],
   },
   {
     id: 'botanical-earth',
     name: 'Botanical Herbary',
     subtitle: 'Warm terracotta, sage & berry',
     unlockLevel: 42,
-    swatches: ['#c95d57', '#537ea8', '#5c9c72', '#dfa04a', '#8e6ca8', '#4f9694'],
+    swatches: ['#bc2e3d', '#4889bf', '#206641', '#e38236', '#9065c4', '#3bc4bf'],
   },
   {
     id: 'classic-vibrant',
     name: 'Classic Vibrant',
     subtitle: 'Crisp, high-contrast brights',
     unlockLevel: 85,
-    swatches: ['#ff4757', '#2e86de', '#2ed573', '#ffa502', '#8c52ff', '#00d2d3'],
+    swatches: ['#e61736', '#1c90ff', '#0a7a3c', '#ff8214', '#9b42ff', '#00dce6'],
   },
 ];
 

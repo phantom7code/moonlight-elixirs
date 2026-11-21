@@ -2,7 +2,7 @@
  * Fetches fresh updates automatically when online; serves complete cached app when offline.
  */
 
-const CACHE_NAME = 'moonlight-elixirs-v11';
+const CACHE_NAME = 'moonlight-elixirs-v12';
 
 const CORE_ASSETS = [
   './',

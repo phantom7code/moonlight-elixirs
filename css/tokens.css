@@ -159,65 +159,65 @@
 /* Palette 1: Apothecary Gems (Default) */
 :root,
 [data-palette="apothecary-gems"] {
-  --p-ruby: #e04f67;        --p-ruby-hi: #f57c90;
-  --p-sapphire: #488be6;    --p-sapphire-hi: #79b1f7;
-  --p-emerald: #3db377;     --p-emerald-hi: #6ed49f;
-  --p-amber: #f0a43a;       --p-amber-hi: #f9c46e;
-  --p-amethyst: #9b6be8;    --p-amethyst-hi: #be9bf5;
-  --p-teal: #2db4b4;        --p-teal-hi: #63d4d4;
-  --p-rose: #ec82b4;        --p-rose-hi: #f7aed1;
-  --p-coral: #ee7452;       --p-coral-hi: #f79e83;
-  --p-indigo: #5c62d6;      --p-indigo-hi: #8a90ee;
-  --p-mint: #76cc90;        --p-mint-hi: #a4e3b6;
-  --p-plum: #b54e9a;        --p-plum-hi: #d47ebd;
-  --p-gold: #e4cc4f;        --p-gold-hi: #f3e282;
+  --p-ruby: #db2443;        --p-ruby-hi: #e56178;
+  --p-sapphire: #3892f5;    --p-sapphire-hi: #70b1f8;
+  --p-emerald: #137e4c;     --p-emerald-hi: #55a27e;
+  --p-amber: #f78828;       --p-amber-hi: #f9a964;
+  --p-amethyst: #9d59f2;    --p-amethyst-hi: #b887f6;
+  --p-teal: #22d8dc;        --p-teal-hi: #60e3e6;
+  --p-rose: #fc9ccd;        --p-rose-hi: #fdb8db;
+  --p-coral: #8f4f2c;       --p-coral-hi: #ae8067;
+  --p-indigo: #29328a;      --p-indigo-hi: #656bab;
+  --p-mint: #7ee048;        --p-mint-hi: #a2e97b;
+  --p-plum: #7c1a63;        --p-plum-hi: #a15a8f;
+  --p-gold: #fae646;        --p-gold-hi: #fbed7a;
   --p-starlight: #dce8ff;   --p-starlight-hi: #ffffff;
 }
 
-/* Palette 2: Soft Pastels */
+/* Palette 2: Soft Pastels (Velvet Pastels) */
 [data-palette="soft-pastels"] {
-  --p-ruby: #ec859b;        --p-ruby-hi: #f8b0bf;
-  --p-sapphire: #7cb3f0;    --p-sapphire-hi: #a9cff8;
-  --p-emerald: #75cea0;     --p-emerald-hi: #a2e3c1;
-  --p-amber: #f5c36b;       --p-amber-hi: #fad99d;
-  --p-amethyst: #b894f0;    --p-amethyst-hi: #d4bdf7;
-  --p-teal: #6fd0d0;        --p-teal-hi: #9ee3e3;
-  --p-rose: #f2a4c8;        --p-rose-hi: #f9c7de;
-  --p-coral: #f39d82;       --p-coral-hi: #f9bfa9;
-  --p-indigo: #8a92e6;      --p-indigo-hi: #b2b8f2;
-  --p-mint: #9cdbb0;        --p-mint-hi: #c2ebd0;
-  --p-plum: #cc84ba;        --p-plum-hi: #e1aed4;
-  --p-gold: #ece07e;        --p-gold-hi: #f6eead;
+  --p-ruby: #dc4c69;        --p-ruby-hi: #e67e93;
+  --p-sapphire: #6ba8f5;    --p-sapphire-hi: #94c0f8;
+  --p-emerald: #2b8c63;     --p-emerald-hi: #66ac8f;
+  --p-amber: #f79d52;       --p-amber-hi: #f9b882;
+  --p-amethyst: #a67df0;    --p-amethyst-hi: #bfa1f4;
+  --p-teal: #5cdbd6;        --p-teal-hi: #8ae5e1;
+  --p-rose: #fcb8dc;        --p-rose-hi: #fdcce6;
+  --p-coral: #945c43;       --p-coral-hi: #b28a78;
+  --p-indigo: #444f9e;      --p-indigo-hi: #7880b9;
+  --p-mint: #9be36d;        --p-mint-hi: #b7eb96;
+  --p-plum: #873870;        --p-plum-hi: #a97098;
+  --p-gold: #fae87a;        --p-gold-hi: #fbee9f;
 }
 
 /* Palette 3: Botanical Herbary */
 [data-palette="botanical-earth"] {
-  --p-ruby: #c95854;        --p-ruby-hi: #e0837f;
-  --p-sapphire: #4f7ca8;    --p-sapphire-hi: #7ba3ca;
-  --p-emerald: #57966d;     --p-emerald-hi: #80b893;
-  --p-amber: #dc9c45;       --p-amber-hi: #ebb973;
-  --p-amethyst: #8c6aa8;    --p-amethyst-hi: #af92c7;
-  --p-teal: #499492;        --p-teal-hi: #74b5b3;
-  --p-rose: #d48394;        --p-rose-hi: #e5a9b6;
-  --p-coral: #d4724a;       --p-coral-hi: #e69878;
-  --p-indigo: #59659e;      --p-indigo-hi: #818cc0;
-  --p-mint: #89b584;        --p-mint-hi: #aecfa9;
-  --p-plum: #9c567d;        --p-plum-hi: #bd7fa1;
-  --p-gold: #cfc056;        --p-gold-hi: #e2d785;
+  --p-ruby: #bc2e3d;        --p-ruby-hi: #cf6973;
+  --p-sapphire: #4889bf;    --p-sapphire-hi: #7baad1;
+  --p-emerald: #206641;     --p-emerald-hi: #5e9176;
+  --p-amber: #e38236;       --p-amber-hi: #eba56e;
+  --p-amethyst: #9065c4;    --p-amethyst-hi: #af90d5;
+  --p-teal: #3bc4bf;        --p-teal-hi: #72d5d1;
+  --p-rose: #f0a1b8;        --p-rose-hi: #f4bbcc;
+  --p-coral: #7d492d;       --p-coral-hi: #a17c68;
+  --p-indigo: #2a356e;      --p-indigo-hi: #666e97;
+  --p-mint: #8ec748;        --p-mint-hi: #aed77b;
+  --p-plum: #6c2352;        --p-plum-hi: #956182;
+  --p-gold: #edd64a;        --p-gold-hi: #f2e17d;
 }
 
 /* Palette 4: Classic Vibrant */
 [data-palette="classic-vibrant"] {
-  --p-ruby: #f23d52;        --p-ruby-hi: #ff7383;
-  --p-sapphire: #2a85eb;    --p-sapphire-hi: #64aaf8;
-  --p-emerald: #26c46c;     --p-emerald-hi: #5ce096;
-  --p-amber: #ff9f1c;       --p-amber-hi: #ffc063;
-  --p-amethyst: #8d4ef5;    --p-amethyst-hi: #b588fa;
-  --p-teal: #00c4c7;        --p-teal-hi: #4ce1e3;
-  --p-rose: #f765a3;        --p-rose-hi: #fa98c2;
-  --p-coral: #ff6b4a;       --p-coral-hi: #ff9a83;
-  --p-indigo: #4b55eb;      --p-indigo-hi: #7e86f5;
-  --p-mint: #5bd98f;        --p-mint-hi: #90e8b4;
-  --p-plum: #c43bb0;        --p-plum-hi: #dc72cd;
-  --p-gold: #f0d72b;        --p-gold-hi: #f8e76e;
+  --p-ruby: #e61736;        --p-ruby-hi: #ed586e;
+  --p-sapphire: #1c90ff;    --p-sapphire-hi: #5cafff;
+  --p-emerald: #0a7a3c;     --p-emerald-hi: #4f9f73;
+  --p-amber: #ff8214;       --p-amber-hi: #ffa556;
+  --p-amethyst: #9b42ff;    --p-amethyst-hi: #b777ff;
+  --p-teal: #00dce6;        --p-teal-hi: #47e6ed;
+  --p-rose: #ff8cc6;        --p-rose-hi: #ffacd6;
+  --p-coral: #8c4723;       --p-coral-hi: #ac7b61;
+  --p-indigo: #1c247a;      --p-indigo-hi: #5c619f;
+  --p-mint: #7ce62e;        --p-mint-hi: #a1ed69;
+  --p-plum: #781154;        --p-plum-hi: #9e5484;
+  --p-gold: #ffeb2e;        --p-gold-hi: #fff169;
 }
